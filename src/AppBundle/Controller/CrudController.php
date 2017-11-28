@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Message;
+use AppBundle\Form\MessageType;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,6 +20,7 @@ class CrudController extends Controller
     const LIMIT_ITEMS_ON_PAGE = 10;
 
     /**
+     * @param Request $request
      * @Route("/", name="crud")
      *
      * @return View
@@ -30,6 +33,7 @@ class CrudController extends Controller
 
 
     /**
+     * @param Request $request
      * @Rest\Get("/api/grid", name="get_grid")
      * @Rest\Get("/api/grid/{page}", name="get_grid_page")
      *
@@ -51,5 +55,25 @@ class CrudController extends Controller
         $serializer = new Serializer($normalizers, $encoders);
 
         return new JsonResponse($serializer->serialize($data, 'json'), 200, [], true);
+    }
+
+    /**
+     * @param Request $request
+     * @Rest\Post("/api/grid/create", name="create_grid_item")
+     */
+    public function createAction(Request $request)
+    {
+        if(!$request->isXmlHttpRequest()) {
+            return new JsonResponse('fail');
+        }
+
+        $message = new Message;
+        $form = $this->createForm(MessageType::class, $message);
+        $form->handleRequest($request);
+
+        dump($form->getData()); die;
+
+
+        return new JsonResponse((string) $form->getData(), 200);
     }
 }

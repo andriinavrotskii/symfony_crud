@@ -8,6 +8,19 @@ $(document).ready(function(){
         ajaxRequest(page);
     });
 
+
+    $("form").on("submit", function (e) {
+        e.preventDefault();
+
+        $.post('/api/grid/create', $("form").serializeArray())
+            .done(function() {
+                console.log( "success" );
+            })
+            .fail(function() {
+                console.log( "error" );
+            })
+    });
+
 });
 
 var ajaxRequest = function(page) {
@@ -17,13 +30,14 @@ var ajaxRequest = function(page) {
         url += '/' + page ;
     }
 
-    $.get(url, function (data) {
-    }).done(function (data) {
-        fillGrid(data.messages);
-        fillPagination(data.page, data.pages);
-    }).fail(function () {
-        alert('FAIL!');
-    });
+    $.get(url)
+        .done(function (data) {
+            fillGrid(data.messages);
+            fillPagination(data.page, data.pages);
+        })
+        .fail(function () {
+            alert('FAIL!');
+        });
 }
 
 var fillGrid = function (data) {
