@@ -1,0 +1,6 @@
+AppBundle\Entity\Message:
+    genus_{1..25}:
+        name: <name()>
+        phone: <numberBetween(100000000, 999999999)>
+        email: <email()>
+        text: <text(200)>
