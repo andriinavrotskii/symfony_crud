@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Message
@@ -25,12 +26,18 @@ class Message
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     * @Assert\Length(min=3)
+     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(min=10, max=10)
      *
      * @ORM\Column(name="phone", type="string", length=10)
      */
@@ -39,6 +46,9 @@ class Message
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     *
      * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
@@ -46,6 +56,9 @@ class Message
 
     /**
      * @var string
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(max=200)
      *
      * @ORM\Column(name="text", type="string", length=200)
      */

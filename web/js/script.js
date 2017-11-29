@@ -1,30 +1,42 @@
 $(document).ready(function(){
-    console.log('hello');
-    ajaxRequest();
+    gridLoad();
 
 
     $(".pagination").on('click', '.page-link', function() {
         let page = $(this)[0].innerText;
-        ajaxRequest(page);
+        gridLoad(page);
     });
 
 
     $("form").on("submit", function (e) {
         e.preventDefault();
 
+        $('#preloader').show();
+
+        removeFeedbacks();
+
         $.post('/api/grid/create', $("form").serializeArray())
-            .done(function() {
-                console.log( "success" );
+            .done(function(data) {
+                if (data.errors) {
+                    showErrors(data.errors);
+                    return;
+                }
+                clearForm();
+                gridLoad();
             })
             .fail(function() {
-                console.log( "error" );
             })
+            .always(function() {
+                $('#preloader').hide();
+            });
     });
 
 });
 
-var ajaxRequest = function(page) {
-    console.log(page);
+var gridLoad = function(page) {
+
+    $('#preloader').show();
+
     let url = "/api/grid";
     if (typeof page != 'undefined') {
         url += '/' + page ;
@@ -37,27 +49,35 @@ var ajaxRequest = function(page) {
         })
         .fail(function () {
             alert('FAIL!');
+        })
+        .always(function() {
+            $('#preloader').hide();
         });
 }
+
 
 var fillGrid = function (data) {
     let content = '';
     data.forEach(function(item, index) {
-        content +=
-            "        <div class='row'>" +
-            "            <div class='col-sm-4'>" +
-            item.name +
+        content += "" +
+            "       <div class='row mesasge-item'>" +
+            "            <div class=\"col-4\">\n" +
+            "                <div class=\"col-12\">\n" +
+                                item.name +
+            "                </div>\n" +
+            "                <div class=\"col-12\">\n" +
+                                item.phone +
+            "                </div>\n" +
+            "                <div class=\"col-12\">\n" +
+                                 item.email +
+            "                </div>\n" +
+            "            </div>\n" +
+            "            <div class=\"col-8\">\n" +
+            "                <div class=\"col-12\">\n" +
+                                item.text +
+            "                </div>\n" +
             "            </div>" +
-            "            <div class='col-sm-4'>" +
-            item.phone +
-            "            </div>" +
-            "            <div class='col-sm-4'>" +
-            item.email +
-            "            </div>" +
-            "            <div class='col-sm-12'>" +
-            item.text +
-            "            </div>" +
-            "        </div>"
+            "       </div>";
     });
 
     $(".grid-data").html(content);
@@ -74,4 +94,27 @@ var fillPagination = function(page, pages) {
         $( element ).append( newLi );
     }
 
+}
+
+
+var showErrors = function(errors) {
+    if (errors.length == 0) {
+        return;
+    }
+
+    for (let field in errors) {
+        errors[field].forEach(function (message) {
+            $( "." + field ).append("<div class='form-control-feedback alert alert-danger'>" + message + "</div>");
+        });
+    }
+}
+
+
+var removeFeedbacks = function() {
+    $( ".form-control-feedback" ).remove();
+}
+
+
+var clearForm = function () {
+    $(".form-control").val("");
 }

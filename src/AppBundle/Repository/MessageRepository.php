@@ -19,7 +19,9 @@ class MessageRepository extends \Doctrine\ORM\EntityRepository
      */
     public function getMessages($page, $limit)
     {
-        $query = $this->createQueryBuilder('m')->getQuery();
+        $query = $this->createQueryBuilder('m')
+            ->orderBy('m.id', 'DESC')
+            ->getQuery();
 
         return $this->paginate($query, $page, $limit);
     }
