@@ -60,6 +60,17 @@ class CrudController extends Controller
         return $this->myResponse($data);
     }
 
+    /**
+     * @param Message $message
+     *
+     * @Rest\Get("/api/message/{id}", name="get_message")
+     *
+     * @return JsonResponse
+     */
+    public function getMessage(Message $message)
+    {
+        return $this->myResponse(['message' => $message], 200);
+    }
 
     /**
      * @param Request $request
@@ -94,7 +105,7 @@ class CrudController extends Controller
     /**
      * @param Request $request
      *
-     * @Rest\Delete("/api/grid/delete/{id}", name="delete_grid_item")
+     * @Rest\Delete("/api/message/{id}", name="delete_grid_item")
      *
      * @return JsonResponse
      */

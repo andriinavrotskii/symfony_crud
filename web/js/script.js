@@ -43,19 +43,48 @@ $(document).ready(function(){
         let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
 
         $.ajax({
-            url: '/api/grid/delete/' + id,
+            url: '/api/message/' + id,
             method: 'DELETE'
         })
-        .done( function (data) {
-            console.log('success');
-            console.log(data);
-            gridLoad();
+            .done( function (data) {
+                console.log('success');
+                console.log(data);
+                gridLoad();
+            })
+            .fail( function (data) {
+                $('#preloader').hide();
+                console.log('fail');
+                console.log(data);
+            }).always(function(){
+            //$('#preloader').hide();
+        });
+
+    });
+
+    $('.grid-data').on('click', '.edit-grid-item', function(e) {
+        e.preventDefault();
+
+        $('#preloader').show();
+
+        let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
+
+        $.ajax({
+            url: '/api/message/' + id,
+            method: 'GET'
         })
-        .fail( function (data) {
-            $('#preloader').hide();
-            console.log('fail');
-            console.log(data);
-        }).always(function(){
+            .done( function (data) {
+                $('#preloader').hide();
+                console.log('success');
+                console.log(data);
+
+                fillModal(data.message);
+                openModal();
+            })
+            .fail( function (data) {
+                $('#preloader').hide();
+                console.log('fail');
+                console.log(data);
+            }).always(function(){
             //$('#preloader').hide();
         });
 
@@ -160,4 +189,21 @@ var clearForm = function () {
 
 var closeModal = function () {
     $('.modal-close').click();
+}
+
+var openModal = function () {
+    $('.button-open-modal').click();
+}
+
+var fillModal = function (data) {
+    for (let value in data) {
+        console.log(value);
+        let elementName = 'app_bundle_message_type[' + value + ']';
+        console.log(elementName);
+
+        let element = ($("input[name*='"+elementName+"']"));
+        if (element.length > 0){
+            element.val(value);
+        }
+    }
 }
