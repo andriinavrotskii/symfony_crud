@@ -5,7 +5,11 @@ body {
 .mesasge-item {
     margin: 10px 0px;
     border: 1px solid #ccc!important;
-    border-radius: 16px;
+    border-radius: 5px;
+}
+
+.grid-id-item {
+    display: none;
 }
 
 /* Preloader */
@@ -17,9 +21,9 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #fff;
+    /*background-color: #fff;*/
     /* change if the mask should have another color then white */
-    z-index: 99;
+    z-index: 9999999999;
     /* makes sure it stays on top */
 }
 

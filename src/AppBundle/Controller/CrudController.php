@@ -60,6 +60,7 @@ class CrudController extends Controller
         return $this->myResponse($data);
     }
 
+
     /**
      * @param Request $request
      *
@@ -78,40 +79,49 @@ class CrudController extends Controller
 
         $form->handleRequest($request);
 
-
-//        return $this->myResponce([
-//            'getData' => $form->getData(),
-//            'isSubmitted' => $form->isSubmitted(),
-//            'isValid' => $form->isValid(),
-//            'errors' => $form->getErrors(true),
-//            'token_manager' => $this->get('security.csrf.token_manager')->getToken('app_bundle_message_type')->getValue(),
-//            'session' => $this->get('session')->all(),
-//        ]);
-
-
-
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($message);
             $em->flush();
 
-            return new JsonResponse([], 200);
+            return new JsonResponse([]);
         }
 
-        return $this->myResponse(['errors' => $this->getErrorMessages($form)], 400);
+        return $this->myResponse(['errors' => $this->getErrorMessages($form)], 200);
+    }
+
+
+    /**
+     * @param Request $request
+     *
+     * @Rest\Delete("/api/grid/delete/{id}", name="delete_grid_item")
+     *
+     * @return JsonResponse
+     */
+    public function deleteAction(Request $request, Message $message)
+    {
+        if (!$message) {
+            throw $this->createNotFoundException('No message found');
+        }
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($message);
+        $em->flush();
+
+        return $this->myResponse([], 204);
     }
 
     /**
      * @param $data
      * @return JsonResponse
      */
-    private function myResponse($data)
+    private function myResponse($data, $code = 200)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
 
-        return new JsonResponse($serializer->serialize($data, 'json'), 200, [], true);
+        return new JsonResponse($serializer->serialize($data, 'json'), $code, [], true);
     }
 
     /**

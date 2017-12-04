@@ -1,14 +1,13 @@
 $(document).ready(function(){
     gridLoad();
 
-
     $(".pagination").on('click', '.page-link', function() {
         let page = $(this)[0].innerText;
         gridLoad(page);
     });
 
 
-    $("form").on("submit", function (e) {
+    $('.submit-form').click(function (e) {
         e.preventDefault();
 
         $('#preloader').show();
@@ -19,18 +18,48 @@ $(document).ready(function(){
             .done(function(data) {
                 if (data.errors) {
                     showErrors(data.errors);
-                    return;
+                } else {
+                    clearForm();
+                    closeModal();
+                    gridLoad();
                 }
-                clearForm();
-                gridLoad();
             })
-            .fail(function() {
+            .fail(function(data) {
+                console.log(data);
             })
             .always(function() {
                 $('#preloader').hide();
             });
     });
 
+    $("#phone").mask( '(000) 000-00-00');
+
+
+    $('.grid-data').on('click', '.remove-grid-item', function(e) {
+        e.preventDefault();
+
+        $('#preloader').show();
+
+        let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
+
+        $.ajax({
+            url: '/api/grid/delete/' + id,
+            method: 'DELETE'
+        })
+        .done( function (data) {
+            console.log('success');
+            console.log(data);
+            gridLoad();
+        })
+        .fail( function (data) {
+            $('#preloader').hide();
+            console.log('fail');
+            console.log(data);
+        }).always(function(){
+            //$('#preloader').hide();
+        });
+
+    });
 });
 
 var gridLoad = function(page) {
@@ -47,8 +76,8 @@ var gridLoad = function(page) {
             fillGrid(data.messages);
             fillPagination(data.page, data.pages);
         })
-        .fail(function () {
-            alert('FAIL!');
+        .fail(function (data) {
+            console.log(data);
         })
         .always(function() {
             $('#preloader').hide();
@@ -61,26 +90,34 @@ var fillGrid = function (data) {
     data.forEach(function(item, index) {
         content += "" +
             "       <div class='row mesasge-item'>" +
-            "            <div class=\"col-4\">\n" +
-            "                <div class=\"col-12\">\n" +
+            "            <div class='col-12 col-sm-4'>" +
+            "                <div class='col-12 grid-control-item'>\n" +
+            "                   <button class='btn btn-link remove-grid-item'><i class=\"fa fa-trash\"></i></button>" +
+            "                   <button class='btn btn-link edit-grid-item'><i class=\"fa fa-pencil\"></i></button>" +
+            "                </div>" +
+            "                <div class='grid-id-item'>" +
+                                item.id +
+            "                </div>" +
+            "                <div class='col-12 grid-name-item'>" +
                                 item.name +
-            "                </div>\n" +
-            "                <div class=\"col-12\">\n" +
+            "                </div>" +
+            "                <div class='col-12 grid-phone-item'>" +
                                 item.phone +
-            "                </div>\n" +
-            "                <div class=\"col-12\">\n" +
-                                 item.email +
-            "                </div>\n" +
-            "            </div>\n" +
-            "            <div class=\"col-8\">\n" +
-            "                <div class=\"col-12\">\n" +
+            "                </div>" +
+            "                <div class='col-12 grid-email-item'>" +
+                                item.email +
+            "                </div>" +
+            "            </div>" +
+            "            <div class='col-12 col-sm-7'>" +
+            "                <div class='col-12grid-text-item'>" +
                                 item.text +
-            "                </div>\n" +
+            "                </div>" +
             "            </div>" +
             "       </div>";
     });
 
     $(".grid-data").html(content);
+    $(".grid-phone-item").mask( '(000) 000-00-00');
 }
 
 
@@ -101,8 +138,9 @@ var showErrors = function(errors) {
     if (errors.length == 0) {
         return;
     }
-
     for (let field in errors) {
+        console.log(errors[field]);
+
         errors[field].forEach(function (message) {
             $( "." + field ).append("<div class='form-control-feedback alert alert-danger'>" + message + "</div>");
         });
@@ -117,4 +155,9 @@ var removeFeedbacks = function() {
 
 var clearForm = function () {
     $(".form-control").val("");
+}
+
+
+var closeModal = function () {
+    $('.modal-close').click();
 }

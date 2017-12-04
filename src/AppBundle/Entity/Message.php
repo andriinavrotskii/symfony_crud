@@ -37,9 +37,9 @@ class Message
      * @var string
      *
      * @Assert\NotBlank()
-     * @Assert\Length(min=10, max=10)
+     * @Assert\Length(min=10, max=200)
      *
-     * @ORM\Column(name="phone", type="string", length=10)
+     * @ORM\Column(name="phone", type="string", length=19)
      */
     private $phone;
 
