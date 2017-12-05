@@ -6,7 +6,6 @@ $(document).ready(function(){
         gridLoad(page);
     });
 
-
     $('.submit-form').click(function (e) {
         e.preventDefault();
 
@@ -14,7 +13,7 @@ $(document).ready(function(){
 
         removeFeedbacks();
 
-        $.post('/api/grid/create', $("form").serializeArray())
+        $.post('/api/message', $("form").serializeArray())
             .done(function(data) {
                 if (data.errors) {
                     showErrors(data.errors);
@@ -26,11 +25,16 @@ $(document).ready(function(){
             })
             .fail(function(data) {
                 console.log(data);
+                clearForm();
             })
             .always(function() {
                 $('#preloader').hide();
             });
     });
+
+    $('.modal-close').click(function () {
+        clearForm();
+    })
 
     $("#phone").mask( '(000) 000-00-00');
 
@@ -43,9 +47,9 @@ $(document).ready(function(){
         let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
 
         $.ajax({
-            url: '/api/message/' + id,
-            method: 'DELETE'
-        })
+                url: '/api/message/' + id,
+                method: 'DELETE'
+            })
             .done( function (data) {
                 console.log('success');
                 console.log(data);
@@ -55,9 +59,7 @@ $(document).ready(function(){
                 $('#preloader').hide();
                 console.log('fail');
                 console.log(data);
-            }).always(function(){
-            //$('#preloader').hide();
-        });
+            });
 
     });
 
@@ -69,26 +71,22 @@ $(document).ready(function(){
         let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
 
         $.ajax({
-            url: '/api/message/' + id,
-            method: 'GET'
-        })
+                url: '/api/message/' + id,
+                method: 'GET'
+            })
             .done( function (data) {
                 $('#preloader').hide();
-                console.log('success');
-                console.log(data);
-
                 fillModal(data.message);
                 openModal();
             })
             .fail( function (data) {
                 $('#preloader').hide();
                 console.log('fail');
-                console.log(data);
-            }).always(function(){
-            //$('#preloader').hide();
-        });
+            });
 
     });
+
+
 });
 
 var gridLoad = function(page) {
@@ -183,11 +181,12 @@ var removeFeedbacks = function() {
 
 
 var clearForm = function () {
-    $(".form-control").val("");
+    $("form").trigger('reset');
+    $("[name*='app_bundle_message_type[id]']").val("");
 }
 
-
 var closeModal = function () {
+    clearForm();
     $('.modal-close').click();
 }
 
@@ -197,13 +196,11 @@ var openModal = function () {
 
 var fillModal = function (data) {
     for (let value in data) {
-        console.log(value);
         let elementName = 'app_bundle_message_type[' + value + ']';
-        console.log(elementName);
+        let element = ($("[name*='" + elementName + "']"));
 
-        let element = ($("input[name*='"+elementName+"']"));
         if (element.length > 0){
-            element.val(value);
+            element.val(data[value]);
         }
     }
 }

@@ -41,6 +41,7 @@ class MessageType extends AbstractType
             'data_class' => Message::class,
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
+            'allow_extra_fields' => true,
         ));
     }
 

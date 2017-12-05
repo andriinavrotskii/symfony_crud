@@ -75,23 +75,31 @@ class CrudController extends Controller
     /**
      * @param Request $request
      *
-     * @Rest\Post("/api/grid/create", name="create_grid_item")
+     * @Rest\Post("/api/message", name="save_message")
      *
      * @return JsonResponse
      */
-    public function createAction(Request $request)
+    public function saveAction(Request $request)
     {
         if(!$request->isXmlHttpRequest()) {
             return new JsonResponse('fail');
         }
 
-        $message = new Message;
+        $em = $this->getDoctrine()->getManager();
+
+        $formData = $request->get('app_bundle_message_type');
+
+        if (isset($formData['id']) && !empty($formData['id'])) {
+            $message = $em->getRepository('AppBundle:Message')->find($formData['id']);
+        } else {
+            $message = new Message;
+        }
+
         $form = $this->createForm(MessageType::class, $message);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($message);
             $em->flush();
 
