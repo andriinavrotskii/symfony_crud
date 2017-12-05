@@ -1,26 +1,26 @@
 <div id="formModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
-
+        <form>
         <div class="modal-content">
             <div class="modal-body">
 
-                <form>
+
                     <input type="hidden" name="app_bundle_message_type[_token]" value="{{ csrf_token('app_bundle_message_type') }}">
                     <input type="hidden" name="app_bundle_message_type[id]" value="">
 
                     <div class="form-group name">
-                        <input class="form-control" type="text" placeholder="Name" name="app_bundle_message_type[name]">
+                        <input class="form-control" type="text" placeholder="Name" name="app_bundle_message_type[name]" required minlength="3">
                     </div>
                     <div class="form-group phone">
-                        <input class="form-control" type="text" placeholder="Phone" name="app_bundle_message_type[phone]" id='phone'>
+                        <input class="form-control" type="text" placeholder="Phone" name="app_bundle_message_type[phone]" id='phone' required>
                     </div>
                     <div class="form-group email">
-                        <input class="form-control" type="email" placeholder="Email" name="app_bundle_message_type[email]">
+                        <input class="form-control" type="email" placeholder="Email" name="app_bundle_message_type[email]" required>
                     </div>
                     <div class="form-group text">
-                        <textarea class="form-control" rows="3" placeholder="Texts" name="app_bundle_message_type[text]"></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Texts" name="app_bundle_message_type[text]" required maxlength="200"></textarea>
                     </div>
-                </form>
+
 
             </div>
             <div class="modal-footer">
@@ -28,6 +28,6 @@
                 <button type="button" class="btn btn-danger modal-close" data-dismiss="modal">Close</button>
             </div>
         </div>
-
+        </form>
     </div>
 </div>

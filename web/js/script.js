@@ -6,7 +6,7 @@ $(document).ready(function(){
         gridLoad(page);
     });
 
-    $('.submit-form').click(function (e) {
+    $("form").submit(function(e){
         e.preventDefault();
 
         $('#preloader').show();
@@ -31,6 +31,32 @@ $(document).ready(function(){
                 $('#preloader').hide();
             });
     });
+
+    // $('.submit-form').click(function (e) {
+    //     e.preventDefault();
+    //
+    //     $('#preloader').show();
+    //
+    //     removeFeedbacks();
+    //
+    //     $.post('/api/message', $("form").serializeArray())
+    //         .done(function(data) {
+    //             if (data.errors) {
+    //                 showErrors(data.errors);
+    //             } else {
+    //                 clearForm();
+    //                 closeModal();
+    //                 gridLoad();
+    //             }
+    //         })
+    //         .fail(function(data) {
+    //             showFailMessage();
+    //             clearForm();
+    //         })
+    //         .always(function() {
+    //             $('#preloader').hide();
+    //         });
+    // });
 
     $('.modal-close').click(function () {
         clearForm();

@@ -4,10 +4,6 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\Message;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -23,10 +19,6 @@ class MessageType extends AbstractType
             ->add('phone')
             ->add('email')
             ->add('text');
-//        ->add('name', TextType::class)
-//        ->add('phone')
-//        ->add('email', EmailType::class)
-//        ->add('text', TextareaType::class);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
             $formData = $event->getData();
