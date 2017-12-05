@@ -24,7 +24,7 @@ $(document).ready(function(){
                 }
             })
             .fail(function(data) {
-                console.log(data);
+                showFailMessage();
                 clearForm();
             })
             .always(function() {
@@ -38,28 +38,27 @@ $(document).ready(function(){
 
     $("#phone").mask( '(000) 000-00-00');
 
-
     $('.grid-data').on('click', '.remove-grid-item', function(e) {
-        e.preventDefault();
-
-        $('#preloader').show();
+        $('#removeConfirmModal').modal('show');
 
         let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
 
-        $.ajax({
-                url: '/api/message/' + id,
-                method: 'DELETE'
-            })
-            .done( function (data) {
-                console.log('success');
-                console.log(data);
-                gridLoad();
-            })
-            .fail( function (data) {
-                $('#preloader').hide();
-                console.log('fail');
-                console.log(data);
-            });
+        $('.message-delete-confirmed').click(function () {
+            $('#removeConfirmModal').modal('hide');
+            $('#preloader').show();
+
+            $.ajax({
+                    url: '/api/message/' + id,
+                    method: 'DELETE'
+                })
+                .done( function (data) {
+                    gridLoad();
+                })
+                .fail( function (data) {
+                    $('#preloader').hide();
+                    showFailMessage();
+                });
+        });
 
     });
 
@@ -80,13 +79,10 @@ $(document).ready(function(){
                 openModal();
             })
             .fail( function (data) {
-                $('#preloader').hide();
-                console.log('fail');
+                showFailMessage();
             });
 
     });
-
-
 });
 
 var gridLoad = function(page) {
@@ -119,8 +115,8 @@ var fillGrid = function (data) {
             "       <div class='row mesasge-item'>" +
             "            <div class='col-12 col-sm-4'>" +
             "                <div class='col-12 grid-control-item'>\n" +
-            "                   <button class='btn btn-link remove-grid-item'><i class=\"fa fa-trash\"></i></button>" +
-            "                   <button class='btn btn-link edit-grid-item'><i class=\"fa fa-pencil\"></i></button>" +
+            "                   <button class='btn btn-link remove-grid-item'><i class='fa fa-trash'></i></button>" +
+            "                   <button class='btn btn-link edit-grid-item'><i class='fa fa-pencil'></i></button>" +
             "                </div>" +
             "                <div class='grid-id-item'>" +
                                 item.id +
@@ -187,11 +183,11 @@ var clearForm = function () {
 
 var closeModal = function () {
     clearForm();
-    $('.modal-close').click();
+    $('#formModal').modal('hide');
 }
 
 var openModal = function () {
-    $('.button-open-modal').click();
+    $('#formModal').modal('show');
 }
 
 var fillModal = function (data) {
@@ -203,4 +199,8 @@ var fillModal = function (data) {
             element.val(data[value]);
         }
     }
+}
+
+var showFailMessage = function () {
+    console.log('fail');
 }
