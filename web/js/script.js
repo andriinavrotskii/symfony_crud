@@ -40,9 +40,6 @@ $(document).ready(function(){
     });
 
 
-    $("#phone").mask( '(000) 000-00-00');
-
-
     $('.grid-data').on('click', '.remove-grid-item', function(e) {
         $('#removeConfirmModal').modal('show');
         $('.message-delete-confirmed').attr('data-id', $(this).data().id);
@@ -206,6 +203,8 @@ var fillModal = function (data) {
             element.val(data[value]);
         }
     }
+
+    $("#phone").mask( '(000) 000-00-00');
 }
 
 
