@@ -1,10 +1,12 @@
 $(document).ready(function(){
     gridLoad();
 
+
     $(".pagination").on('click', '.page-link', function() {
         let page = $(this)[0].innerText;
         gridLoad(page);
     });
+
 
     $("form").submit(function(e){
         e.preventDefault();
@@ -32,71 +34,48 @@ $(document).ready(function(){
             });
     });
 
-    // $('.submit-form').click(function (e) {
-    //     e.preventDefault();
-    //
-    //     $('#preloader').show();
-    //
-    //     removeFeedbacks();
-    //
-    //     $.post('/api/message', $("form").serializeArray())
-    //         .done(function(data) {
-    //             if (data.errors) {
-    //                 showErrors(data.errors);
-    //             } else {
-    //                 clearForm();
-    //                 closeModal();
-    //                 gridLoad();
-    //             }
-    //         })
-    //         .fail(function(data) {
-    //             showFailMessage();
-    //             clearForm();
-    //         })
-    //         .always(function() {
-    //             $('#preloader').hide();
-    //         });
-    // });
 
     $('.modal-close').click(function () {
         clearForm();
-    })
+    });
+
 
     $("#phone").mask( '(000) 000-00-00');
 
+
     $('.grid-data').on('click', '.remove-grid-item', function(e) {
         $('#removeConfirmModal').modal('show');
-
-        let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
-
-        $('.message-delete-confirmed').click(function () {
-            $('#removeConfirmModal').modal('hide');
-            $('#preloader').show();
-
-            $.ajax({
-                    url: '/api/message/' + id,
-                    method: 'DELETE'
-                })
-                .done( function (data) {
-                    gridLoad();
-                })
-                .fail( function (data) {
-                    $('#preloader').hide();
-                    showFailMessage();
-                });
-        });
-
+        $('.message-delete-confirmed').attr('data-id', $(this).data().id);
     });
+
+
+    $('.message-delete-confirmed').click(function () {
+        $('#removeConfirmModal').modal('hide');
+        $('#preloader').show();
+
+        let id = $('.message-delete-confirmed').attr('data-id');
+
+        $.ajax({
+                url: '/api/message/' + id,
+                method: 'DELETE'
+            })
+            .done( function (data) {
+                gridLoad();
+            })
+            .fail( function (data) {
+                $('#preloader').hide();
+                showFailMessage();
+            });
+    });
+
 
     $('.grid-data').on('click', '.edit-grid-item', function(e) {
         e.preventDefault();
 
         $('#preloader').show();
 
-        let id = $(this).parent().parent().find('.grid-id-item')[0].innerText;
-
         $.ajax({
-                url: '/api/message/' + id,
+                url: '/api/message/' + $(this).data().id,
                 method: 'GET'
             })
             .done( function (data) {
@@ -110,6 +89,7 @@ $(document).ready(function(){
 
     });
 });
+
 
 var gridLoad = function(page) {
 
@@ -134,19 +114,12 @@ var gridLoad = function(page) {
 }
 
 
-var fillGrid = function (data) {
+var fillGrid = function (data)  {
     let content = '';
     data.forEach(function(item, index) {
         content += "" +
             "       <div class='row mesasge-item'>" +
             "            <div class='col-12 col-sm-4'>" +
-            "                <div class='col-12 grid-control-item'>\n" +
-            "                   <button class='btn btn-link remove-grid-item'><i class='fa fa-trash'></i></button>" +
-            "                   <button class='btn btn-link edit-grid-item'><i class='fa fa-pencil'></i></button>" +
-            "                </div>" +
-            "                <div class='grid-id-item'>" +
-                                item.id +
-            "                </div>" +
             "                <div class='col-12 grid-name-item'>" +
                                 item.name +
             "                </div>" +
@@ -156,6 +129,11 @@ var fillGrid = function (data) {
             "                <div class='col-12 grid-email-item'>" +
                                 item.email +
             "                </div>" +
+            "                <div class='col-12 grid-control-item'>\n" +
+            "                   <button class='btn btn-link edit-grid-item' data-id=" + item.id + "><i class='fa fa-pencil'></i></button>" +
+            "                   <button class='btn btn-link remove-grid-item' data-id=" + item.id + "><i class='fa fa-trash'></i></button>" +
+            "                </div>" +
+
             "            </div>" +
             "            <div class='col-12 col-sm-7'>" +
             "                <div class='col-12grid-text-item'>" +
@@ -207,14 +185,17 @@ var clearForm = function () {
     $("[name*='app_bundle_message_type[id]']").val("");
 }
 
+
 var closeModal = function () {
     clearForm();
     $('#formModal').modal('hide');
 }
 
+
 var openModal = function () {
     $('#formModal').modal('show');
 }
+
 
 var fillModal = function (data) {
     for (let value in data) {
@@ -226,6 +207,7 @@ var fillModal = function (data) {
         }
     }
 }
+
 
 var showFailMessage = function () {
     console.log('fail');

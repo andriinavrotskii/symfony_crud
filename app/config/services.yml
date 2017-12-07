@@ -33,3 +33,10 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    AppBundle\Event\Listener\SendEmailListener:
+        arguments:
+            $emailFrom: '%email_from%'
+            $emailAdmin: '%email_admin%'
+        tags:
+            - {name: kernel.event_listener, event: send_email.event}
