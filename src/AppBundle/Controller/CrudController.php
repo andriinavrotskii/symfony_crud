@@ -44,7 +44,7 @@ class CrudController extends Controller
     public function getGridAction(Request $request, GridService $gridService, $page = 1)
     {
         if(!$request->isXmlHttpRequest()) {
-            return new $this->getJsonResponse('fail', 403);
+            return $this->getJsonResponse('fail', 403);
         }
 
         return $this->getJsonResponse(
@@ -61,8 +61,9 @@ class CrudController extends Controller
      */
     public function getMessage(Request $request, Message $message)
     {
+        $this->createNotFoundException('No message found');
         if(!$request->isXmlHttpRequest()) {
-            return new $this->getJsonResponse('fail', 403);
+            return $this->getJsonResponse('fail', 403);
         }
 
         return $this->getJsonResponse(['message' => $message], 200);
@@ -97,7 +98,7 @@ class CrudController extends Controller
     public function deleteAction(Request $request, MessageService $messageService, Message $message)
     {
         if(!$request->isXmlHttpRequest()) {
-            return new $this->getJsonResponse('fail', 403);
+            return $this->getJsonResponse('fail', 403);
         }
 
         return $this->getJsonResponse(

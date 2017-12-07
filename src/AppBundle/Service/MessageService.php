@@ -17,6 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MessageService
 {
@@ -106,7 +107,7 @@ class MessageService
     public function deleteMessage(Message $message)
     {
         if (!$message) {
-            throw $this->createNotFoundException('No message found');
+            throw new NotFoundHttpException('No message found');
         }
 
         $this->em->remove($message);
